@@ -1,8 +1,8 @@
-# opencode-notifier-marker
+# opencode-notify-marker
 
 > Marker file plugin for OpenCode - create files when events occur.
 
-A plugin for [OpenCode](https://github.com/sst/opencode) that creates marker files in `/workspace/tmp/notifier-marker-files/` when specific events occur. Useful for external monitoring scripts to detect when the AI needs attention.
+A plugin for [OpenCode](https://github.com/sst/opencode) that creates marker files in `/workspace/tmp/notifier-marker-files/` when specific events occur. Useful for external monitoring scripts to detect when the AI needs attention (e.g. when you are running OpenCode in a container and can't receive OS notifications).
 
 **Note:** This project is a fork of [kdco-notify](https://github.com/kdcokenny/opencode-notify) by kdcokenny, repurposed to create marker files instead of desktop notifications.
 
@@ -16,33 +16,30 @@ You want to monitor OpenCode sessions from external tools (shell scripts, monito
 
 ## Installation
 
-Install via [OCX](https://github.com/kdcokenny/ocx), the package manager for OpenCode extensions:
+Clone this repo and copy (or symlink) the `src/` into your `.opencode/plugins/` directory:
 
 ```bash
-# Install OCX
-curl -fsSL https://ocx.kdco.dev/install.sh | sh
-
-# Add the registry and install
-ocx registry add https://registry.kdco.dev --name kdco
-ocx add kdco/notifier-marker
+cd /path/to/opencode-notify-marker
+ln -s /path/to/opencode-notify-marker/src /path/to/.opencode/plugins/opencode-notify-marker
 ```
 
-Or get everything at once with `kdco-workspace`:
+Or if you're in the workspace:
 
 ```bash
-ocx add kdco/workspace
+ln -s /workspace/projects/opencode-notify-marker/src /workspace/.opencode/plugins/opencode-notify-marker
 ```
 
 ## How It Works
 
-| Event | Marker File | Why |
-|-------|-------------|-----|
-| Session idle | `SESSION_IDLE` | Main task done - time to review |
-| Session error | `SESSION_ERROR` | Something broke - needs attention |
-| Permission needed | `PERMISSION_UPDATED` | AI is blocked, waiting for you |
-| Question asked | `TOOL_EXECUTE_BEFORE` | AI needs your input |
+| Event             | Marker File           | Why                               |
+| ----------------- | --------------------- | --------------------------------- |
+| Session idle      | `SESSION_IDLE`        | Main task done - time to review   |
+| Session error     | `SESSION_ERROR`       | Something broke - needs attention |
+| Permission needed | `PERMISSION_UPDATED`  | AI is blocked, waiting for you    |
+| Question asked    | `TOOL_EXECUTE_BEFORE` | AI needs your input               |
 
 The plugin automatically:
+
 1. Creates marker files in `/workspace/tmp/notifier-marker-files/`
 2. Only creates markers for parent sessions (not every sub-task)
 3. Overwrites existing markers with new timestamps
@@ -70,13 +67,13 @@ while true; do
     # Your logic here
     rm "/workspace/tmp/notifier-marker-files/SESSION_IDLE"
   fi
-  
+
   if [ -f "/workspace/tmp/notifier-marker-files/SESSION_ERROR" ]; then
     echo "Session error detected!"
     # Your logic here
     rm "/workspace/tmp/notifier-marker-files/SESSION_ERROR"
   fi
-  
+
   sleep 5
 done
 ```
@@ -96,7 +93,7 @@ while True:
         if marker_path.exists():
             print(f"Event detected: {marker}")
             marker_path.unlink()
-    
+
     time.sleep(5)
 ```
 
@@ -112,19 +109,27 @@ Each marker file contains a JSON object with a timestamp:
 
 ## Supported Events
 
-| Event | Event Type | Marker File |
-|-------|------------|-------------|
-| Session idle | `session.idle` | `SESSION_IDLE` |
-| Session error | `session.error` | `SESSION_ERROR` |
-| Permission updated | `permission.updated` | `PERMISSION_UPDATED` |
-| Question tool | `tool.execute.before` (question) | `TOOL_EXECUTE_BEFORE` |
+| Event              | Event Type                       | Marker File           |
+| ------------------ | -------------------------------- | --------------------- |
+| Session idle       | `session.idle`                   | `SESSION_IDLE`        |
+| Session error      | `session.error`                  | `SESSION_ERROR`       |
+| Permission updated | `permission.updated`             | `PERMISSION_UPDATED`  |
+| Question tool      | `tool.execute.before` (question) | `TOOL_EXECUTE_BEFORE` |
 
-## Manual Installation
+## Running the Watcher Script (Host)
 
-If you prefer not to use OCX, copy the source from [`src/`](./src) to `.opencode/plugin/`.
+If you're running OpenCode in a container but want desktop notifications on your host machine:
 
-**Caveats:**
-- Updates require manual re-copying
+1. Copy `watch-for-marker-files.sh` to your host machine
+2. Run it from the host (not the container):
+
+```bash
+./watch-for-marker-files.sh
+```
+
+The script watches the marker directory and sends desktop notifications when files are created. It automatically deletes the marker file after showing the notification.
+
+**Note:** The script uses `notify-send` which is available on Linux. On macOS, you may need to install `terminal-notifier` or use a different notification method.
 
 ## License
 
