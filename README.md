@@ -16,14 +16,9 @@ You want to monitor OpenCode sessions from external tools (shell scripts, monito
 
 ## Installation
 
-Clone this repo and copy (or symlink) the `src/` into your `.opencode/plugins/` directory:
+Clone this repo and copy its `src/` into your Opencode config directory: `.opencode/plugin/`
 
-```bash
-cd /path/to/opencode-notify-marker
-ln -s /path/to/opencode-notify-marker/src /path/to/.opencode/plugins/opencode-notify-marker
-```
-
-Or if you're in the workspace:
+For example, in my container:
 
 ```bash
 ln -s /workspace/projects/opencode-notify-marker/src /workspace/.opencode/plugins/opencode-notify-marker
