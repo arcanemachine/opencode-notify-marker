@@ -4,6 +4,8 @@
 
 A plugin for [OpenCode](https://github.com/sst/opencode) that creates marker files in `/workspace/tmp/notifier/` when specific events occur. Useful for external monitoring scripts to detect when the AI needs attention.
 
+**Note:** This project is a fork of [kdco-notify](https://github.com/kdcokenny/opencode-notify) by kdcokenny, repurposed to create marker files instead of desktop notifications.
+
 ## Why This Exists
 
 You want to monitor OpenCode sessions from external tools (shell scripts, monitoring dashboards, etc.) but don't want to poll the API. This plugin solves that:
@@ -126,4 +128,8 @@ If you prefer not to use OCX, copy the source from [`src/`](./src) to `.opencode
 
 ## License
 
-MIT
+MIT License
+
+Copyright (c) 2026 arcanemachine
+
+This project is a fork of [kdco-notify](https://github.com/kdcokenny/opencode-notify) by kdcokenny, repurposed to create marker files instead of desktop notifications.
