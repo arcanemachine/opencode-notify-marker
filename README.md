@@ -39,6 +39,14 @@ Clone this repo and copy its `src/` into your Opencode config directory: `.openc
 
 For example: `cp -r /path/to/this/repo/src /path/to/.opencode/plugin`
 
+Then add `"opencode-notify-marker"` to the `plugin` array in your `~/.opencode/opencode.json`:
+
+```json
+{
+  "plugin": ["opencode-notify-marker"]
+}
+```
+
 ## Usage
 
 If you're running OpenCode in a container but want desktop notifications on your host machine:
@@ -51,10 +59,10 @@ If you're running OpenCode in a container but want desktop notifications on your
 
 ```bash
 # Start OpenCode with custom marker directory
-MARKER_DIR="/path/to/some/dir" opencode
+PI_NOTIFY_MARKER_DIR="/path/to/some/dir" opencode
 
 # Run watcher script pointing to the same directory in a Docker volume mount
-WATCH_DIR="/workspace/path/to/mount/dir" ./watch-and-notify.sh
+PI_NOTIFY_MARKER_WATCH_DIR="/workspace/path/to/mount/dir" ./watch-and-notify.sh
 ```
 
 ## License
